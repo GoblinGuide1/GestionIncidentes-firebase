@@ -1,0 +1,30 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Diagnosticar incidencias</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Diagnostico de incidencias</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-card-content>
+    <ion-item>
+      <ion-label position="floating" > Detalles </ion-label>
+      <ion-input   [(ngModel)]="newDiagnos.detalles"(ionInput)="checkFormValidity()"  required></ion-input> <!-- Agrega el atributo 'required' para validar que el campo no esté vacío -->
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" > ¿se realizo alguna compra? </ion-label>
+      <ion-input   [(ngModel)]="newDiagnos.comprar" (ionInput)="checkFormValidity()" required></ion-input> <!-- Agrega el atributo 'required' para validar que el campo no esté vacío -->
+    </ion-item>
+    <ion-item>
+      <ion-label  position="floating" > ¿Tiempo estimado para realizar las reparacion? </ion-label>
+      <ion-input [(ngModel)]="newDiagnos.tiempoS"  (ionInput)="checkFormValidity()" required></ion-input> <!-- Agrega el atributo 'required' para validar que el campo no esté vacío -->
+    </ion-item>
+    <ion-item>
+    </ion-item>
+    <ion-button expand="full" (click)="createDIagnos()" [disabled]="!isFormValid">Diagnosticar Incidencia</ion-button>
+</ion-card-content>
+</ion-content>

@@ -1,0 +1,35 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>CreateIncidencia</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">CreateIncidencia</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-card-content>
+    <ion-item>
+      <ion-label position="floating"> Titulo de incidencia </ion-label>
+      <ion-input  [(ngModel)]="newIncidencias.titulo" required></ion-input> <!-- Agrega el atributo 'required' para validar que el campo no esté vacío -->
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating"> Descripcion </ion-label>
+      <ion-input  [(ngModel)]="newIncidencias.descripcion"  required></ion-input> <!-- Agrega el atributo 'required' para validar que el campo no esté vacío -->
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Lugar</ion-label>
+      <ion-input   [(ngModel)]="newIncidencias.lugar"  required></ion-input> <!-- Agrega el atributo 'required' para validar que el campo no esté vacío -->
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >Imagen</ion-label>
+      <ion-input  [(ngModel)]="newIncidencias.imagen" type="file" accept="image/*"  (change)="newImagenesUpload($event)" required></ion-input> <!-- Agrega el atributo 'required' para validar que el campo no esté vacío -->
+    </ion-item>
+    <ion-item>
+    <img [src]="newImage">
+    </ion-item>
+    <ion-button expand="full" (click)="GuardarIncidencia()"[disabled]="!isFormValid">Guardar Incidencia</ion-button>
+</ion-card-content>
+</ion-content>
