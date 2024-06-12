@@ -50,7 +50,7 @@ export class HomePage implements OnInit  {
   redirectUsuer( ){
 if (this.userId == "") {
   this.router.navigate(['/login']);
-  console.log("sexo");
+  //console.log("sexo");
 }
   
   }
