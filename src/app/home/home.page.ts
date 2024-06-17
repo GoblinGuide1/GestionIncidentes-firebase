@@ -1,6 +1,7 @@
+import { NavController } from '@ionic/angular';
 import { AutheticaService } from './../authetica.service';
 import { Incidencias } from './../models/interfaces';
-import { Component,OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -8,56 +9,72 @@ import { Router } from '@angular/router';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnInit  {
+export class HomePage implements OnInit {
 
   userId: string | null = null;
-  userRole: string | null = null;
+  userRoles: string[] = [];
   pressIdInci = '';
-  nameUser: string | null = null;;
+  nameUser: string | null = null;
   incidencias: Incidencias[] = [];
-  constructor(private AutheticaService: AutheticaService,private router: Router) {}
+  typeRol = "";
+  
+
+  constructor(private autheticaService: AutheticaService,
+     private router: Router,
+      private navController: NavController) {}
 
   ngOnInit() {
     this.getIncidencias();
 
-    this.userId = this.AutheticaService.getCurrentUserId();
-    console.log('Current User ID:', this.userId);
+    // Recuperar datos de localStorage
+    this.userId = this.autheticaService.getCurrentUserId();
+    
+    this.nameUser = localStorage.getItem('userName');
 
-    this.userId = this.AutheticaService.getCurrentUserId();
-    this.userRole = this.AutheticaService.getCurrentUserRole();
-    this.AutheticaService.getUserName(this.userId).subscribe(userName => {
-      this.nameUser = userName;
-
+    this.autheticaService.asigRoles(parseInt(this.userId)).subscribe(roles => {
+      this.userRoles = roles;
     });
   
-    this.redirectUsuer();
     
+    if (this.userId) {
+      this.autheticaService.getUserName(this.userId).subscribe(userName => {
+        this.nameUser = userName;
+      });
+    }
+
+    this.redirectUser();
+    this.autheticaService.asigRoles(parseInt(this.userId))
+    //this.asigRoles(this.userRole)
     console.log('Current User ID:', this.userId);
-    console.log('Current User Role:', this.userRole);
-// investigar implementar local storage y guardas
+    console.log('Current User Role:', this.userRoles);
   }
-  
-  //optiene las incidencias de la colleccion
-  getIncidencias(){
+
+    irpagina(){
+      this.navController.navigateBack("login")
+    }
+  getIncidencias() {
     const enlace = 't_Incidencias';
-    this.AutheticaService.getCollectionChanges<Incidencias>(enlace).subscribe(
+    this.autheticaService.getCollectionChanges<Incidencias>(enlace).subscribe(
       res => {
         console.log(res);
         this.incidencias = res;
       }
-    )
-  }
-  redirectUsuer( ){
-if (this.userId == "") {
-  this.router.navigate(['/login']);
-  //console.log("sexo");
-}
-  
+    );
   }
 
- public  getIncideniciaId(incidenicia : Incidencias){
-   this.AutheticaService.pressid =incidenicia.idIncidencia;
-   console.log("el id del item es",this.AutheticaService.pressid);
-
+  redirectUser() {
+    if (!this.userId) {
+      this.router.navigate(['/login']);
+    }
   }
+
+  public getIncidenciaId(incidencia: Incidencias) {
+    this.autheticaService.pressid = incidencia.idIncidencia;
+    console.log("El ID del item es", this.autheticaService.pressid);
+  }
+
+  hasRole(roles: string[]): boolean {
+    return roles.some(role => this.userRoles.includes(role));
+  }
+   
 }

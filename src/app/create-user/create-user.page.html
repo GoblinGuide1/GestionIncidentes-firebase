@@ -1,0 +1,44 @@
+
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title class="titleCU" >Creacion de Usuarios</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Creacion de Usuarios</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-card-content>
+      <ion-textarea  class="ion-input-margin" label="Nombre" labelPlacement="floating" fill="outline" ></ion-textarea>
+      <ion-textarea class="ion-input-margin"  label="Cedula" labelPlacement="floating" fill="outline"></ion-textarea>
+      <ion-textarea class="ion-input-margin" label="Puesto" labelPlacement="floating" fill="outline" ></ion-textarea>
+      <ion-textarea class="ion-input-margin" label="Celular" labelPlacement="floating" fill="outline" ></ion-textarea>
+      <ion-textarea class="ion-input-margin" label="Departamento" labelPlacement="floating" fill="outline" ></ion-textarea>
+      <ion-textarea class="ion-input-margin" label="Usuario Institucional o Correo" labelPlacement="floating" fill="outline"></ion-textarea>
+      <ion-textarea class="ion-input-margin" label="Rol" labelPlacement="floating" fill="outline"></ion-textarea>
+
+    
+    <ion-button  class="ion-button-margin" expand="full"  shape="round">Guardar Usuario</ion-button>
+<br>
+<ion-fab slot="fixed" vertical="bottom" horizontal="end">
+  <ion-fab-button>
+    <ion-icon name="chevron-back"></ion-icon>
+  </ion-fab-button>
+  <ion-fab-list side="top">
+    <ion-fab-button>
+      <ion-icon name="document"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-button>
+      <ion-icon name="color-palette"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-button>
+      <ion-icon name="globe"></ion-icon>
+    </ion-fab-button>
+  </ion-fab-list>
+</ion-fab>
+</ion-card-content>
+
+</ion-content>

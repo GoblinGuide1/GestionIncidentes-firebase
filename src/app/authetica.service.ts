@@ -1,25 +1,25 @@
 import { Injectable } from '@angular/core';
-import  firebase  from "firebase/compat/app";
+import firebase from 'firebase/compat/app';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
-import { from,Observable } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-
+import { Incidencias } from '../app/models/interfaces';
 interface Counter {
   lastIncidenceId: number;
   lastdiagnosceId: number;
 }
+
 @Injectable({
   providedIn: 'root'
 })
 export class AutheticaService {
 
-  public currentUserId: string ='' ; // Propiedad para almacenar el ID del usuario
-  private currentUserRole: string | null = null;
-  public pressid: string ='' ; // Propiedad para almacenar el ID del usuario
-  
-  constructor(private firestore: AngularFirestore, private router: Router,public database:AngularFirestore ) { }
+  public currentUserId: string = ''; // Propiedad para almacenar el ID del usuario
+  private currentUserRole: string = '';
+  public pressid: string = ''; // Propiedad para almacenar el ID del usuario
 
+  constructor(private firestore: AngularFirestore, private router: Router, public database: AngularFirestore) { }
 
   login(email: string, password: string): Observable<any> {
     return from(this.firestore.collection('Usuarios', ref => ref.where('ct_correo', '==', email).where('cn_cedula', '==', password)).get())
@@ -30,6 +30,10 @@ export class AutheticaService {
             const userData = userDoc.data();
             this.currentUserId = userDoc.id;
             this.currentUserRole = (userData as any).cn_idRol;
+            // Guardar en localStorage
+            localStorage.setItem('currentUserId', this.currentUserId);
+            localStorage.setItem('currentUserRole', this.currentUserRole);
+            localStorage.setItem('userName', (userData as any).ct_nombreUsuario);
             return { success: true, data: userData };
           } else {
             return { success: false, message: 'Invalid credentials' };
@@ -38,33 +42,33 @@ export class AutheticaService {
       );
   }
 
-    getAllUsers() {
-      return this.firestore.collection('Usuarios').snapshotChanges().pipe(
-        map(actions => actions.map(a => {
-          const data = a.payload.doc.data();
-          const id = a.payload.doc.id;
-          return { id, data };
-        }))
-      );
-    }
+  getAllUsers() {
+    return this.firestore.collection('Usuarios').snapshotChanges().pipe(
+      map(actions => actions.map(a => {
+        const data = a.payload.doc.data();
+        const id = a.payload.doc.id;
+        return { id, data };
+      }))
+    );
+  }
 
-    getCurrentUserId(): string {
-      return this.currentUserId;
-    }
-    getUserRole(userId: string): Observable<string | null> {
-      return this.firestore.doc(`Usuarios/${userId}`).valueChanges().pipe(
-        map(user => user ? (user as any).cn_idRol : null)
-      );
-    }
+  getCurrentUserId(): string {
+    return ""+localStorage.getItem('currentUserId');
+  }
 
-    getUserName(userId: string): Observable<string | null> {
-      return this.firestore.doc(`Usuarios/${userId}`).valueChanges().pipe(
-        map(user => user ? (user as any).ct_nombreUsuario : null)
-      );
-    }
-    getCurrentUserRole(): string | null {
-      return this.currentUserRole;
-    }
+  getUserRole(userId: string): Observable<string | null> {
+    return this.firestore.doc(`Usuarios/${userId}`).valueChanges().pipe(
+      map(user => user ? (user as any).cn_idRol : null)
+    );
+  }
+
+  getUserName(userId: string | null): Observable<string | null> {
+    return of(localStorage.getItem('userName'));
+  }
+
+  getCurrentUserRole(): string {
+    return ""+localStorage.getItem('currentUserRole');
+  }
 
 //creacion del crud 
 
@@ -112,44 +116,68 @@ generateIncidenceId(): Observable<string> {
   }));
 }
 
-generateDiagnosId(): Observable<string> {
-  const counterDocRef = this.firestore.doc('counters/lastdiagnosceId');
+  generateDiagnosId(): Observable<string> {
+    const counterDocRef = this.firestore.doc('counters/lastdiagnosceId');
+    return from(this.firestore.firestore.runTransaction(async transaction => {
+      const counterDoc = await transaction.get(counterDocRef.ref);
+      if (!counterDoc.exists) {
+        throw new Error('Counter document does not exist!');
+      }
+      const counterData = counterDoc.data() as Counter;
+      const lastdiagnosceId = counterData.lastdiagnosceId || 0;
+      const newgdiagnosceId = lastdiagnosceId + 1;
+      const newDiagnosCode = `diag-${newgdiagnosceId.toString().padStart(6, '0')}`;
+      //actualizar contador
+      transaction.update(counterDocRef.ref, { lastdiagnosceId: newgdiagnosceId });
+      return newDiagnosCode;
+    }));
+  }
 
-  return from(this.firestore.firestore.runTransaction(async transaction => {
-    const counterDoc = await transaction.get(counterDocRef.ref);
-    if (!counterDoc.exists) {
-      throw new Error('Counter document does not exist!');
+  getCollectionChanges<tipo>(enlace: string) {
+    const ref = this.firestore.collection<tipo>(enlace);
+    return ref.valueChanges(); // Evalua todos los cambios y devuelve un observable
+  }
+
+  getCollectionData<T>(enlace: string): Observable<T[]> {
+    return this.firestore.collection<T>(enlace).snapshotChanges().pipe(
+      map(actions => actions.map(a => {
+        const data = a.payload.doc.data() as T;
+        const id = a.payload.doc.id;
+        return { id, ...data };
+      }))
+    );
+  }
+
+  asigRoles(userId: number): Observable<string[]> {
+    return this.firestore.collection('t_usuariosRoles', ref => ref.where('cn_idUsuario', '==', userId)).snapshotChanges().pipe(
+      map(actions => actions.map(a => {
+        const data = a.payload.doc.data() as any;
+        console.log( data.cn_idRol)
+        return data.cn_idRol;
+      })),
+      map(roleIds => {
+        const roles = roleIds.map(roleId => this.mapRoleIdToRoleName(roleId));
+        return roles;
+      })
+    );
+  }
+
+  private mapRoleIdToRoleName(roleId: number): string {
+    switch (roleId) {
+      case 1: return 'Administrador';
+      case 2: return 'Usuario';
+      case 3: return 'Encargado';
+      case 4: return 'Tecnico';
+      case 5: return 'Supervisor';
+      default: return 'Unknown Role';
     }
-    const counterData = counterDoc.data() as Counter;
-    const lastdiagnosceId = counterData.lastdiagnosceId || 0;
-    const newgdiagnosceId = lastdiagnosceId + 1;
-    const newDiagnosCode = `diag-${newgdiagnosceId.toString().padStart(6, '0')}`;
+    
+  }
 
-    // Actualizar el contador
-    transaction.update(counterDocRef.ref, { lastdiagnosceId: newgdiagnosceId });
-
-    return newDiagnosCode;
-  }));
-}
-
-// funcion generica para obtener todos los datos de una biblioteca(tabal)
-getCollectionChanges <tipo>(enlace: string){
-const ref = this.firestore.collection  <tipo>(enlace);
-return ref.valueChanges();//evalua todos los cambio y devuelve un opservable
-}
-
-getCollectionData<T>(enlace: string): Observable<T[]> {
-  return this.firestore.collection<T>(enlace).snapshotChanges().pipe(
-    map(actions => actions.map(a => {
-      const data = a.payload.doc.data() as T;
-      const id = a.payload.doc.id;
-      return { id, ...data };
-    }))
-  );
-}
-
-
+  updateIncidencia(incidenciaId: string, newData: Partial<Incidencias>): Observable<void> {
+    const collection = this.firestore.collection('t_Incidencias');
+    return from(collection.doc(incidenciaId).update(newData));
   }
 
 
-
+}

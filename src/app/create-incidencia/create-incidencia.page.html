@@ -31,5 +31,14 @@
     <img [src]="newImage">
     </ion-item>
     <ion-button expand="full" (click)="GuardarIncidencia()"[disabled]="!isFormValid">Guardar Incidencia</ion-button>
+
+    
 </ion-card-content>
+
+<ion-fab slot="fixed" vertical="bottom" horizontal="center">
+  <ion-fab-button (click)="goBack()">
+      <ion-icon name="chevron-back"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
 </ion-content>

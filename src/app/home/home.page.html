@@ -1,32 +1,63 @@
 <!-- src/app/pages/home/home.page.html -->
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
     <ion-title>Inicio</ion-title>
+    <li *ngFor="let role of userRoles">{{ role }}</li>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-menu side="start" menuId="first" contentId="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Menú</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <ion-list>
+      <ion-item routerLink="/home">
+        <ion-label>Inicio</ion-label>
+      </ion-item>
+      <ion-item routerLink="/create-user">
+        <ion-label>Crear Usuario</ion-label>
+      </ion-item>
+      <ion-item routerLink="/profile">
+        <ion-label>Perfil</ion-label>
+      </ion-item>
+      <ion-item *ngIf="hasRole(['Encargado', 'Administrador'])" routerLink="/asig-incidencia">
+        <ion-label>Asignar Tecnico</ion-label>
+      </ion-item>
+      <ion-item (click)="irpagina()">
+        <ion-label>Cerrar Sesión</ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<ion-content id="main-content">
   <ion-card>
     <ion-card-header>
       <ion-card-title>Hola Bienvenido {{ nameUser }} </ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <p>Your User ID is: {{ userId }}</p>
-      <p>Your Role is: {{ userRole }}</p>
+      <p>Your Role is: {{ userRoles }}</p>
     </ion-card-content>
 
-    <ion-button  routerLink="/create-incidencia">Reportar Incidencias</ion-button>
+    <ion-button routerLink="/create-incidencia">Reportar Incidencias</ion-button>
   </ion-card>
 
-<ion-card *ngFor="let incidencia of incidencias">
+  <ion-card *ngFor="let incidencia of incidencias">
     <ion-item>
       <ion-label>
-         Tiulo: {{incidencia.titulo}}
+        Título: {{incidencia.titulo}}
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
-         Descripcion: {{incidencia.descripcion}}
+        Descripción: {{incidencia.descripcion}}
       </ion-label>
     </ion-item>
     <ion-item>
@@ -34,7 +65,7 @@
         <img [src]="incidencia.imagen ">
       </ion-label>
     </ion-item>
-    <ion-button routerLink="/diagnos-incidencia" (click)="getIncideniciaId(incidencia)">Diagnosticar</ion-button>
-      
-</ion-card>
+    <ion-button *ngIf="hasRole(['Encargado', 'Administrador'])" routerLink="/diagnos-incidencia" (click)="getIncidenciaId(incidencia)">Diagnosticar</ion-button>
+    <ion-button *ngIf="hasRole(['Tecnico', 'Administrador'])" routerLink="/asig-incidencia" (click)="getIncidenciaId(incidencia)">Asignar Incidencias </ion-button>
+  </ion-card>
 </ion-content>

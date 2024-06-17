@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { AutheticaService } from '../authetica.service';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { LoadingController } from '@ionic/angular';
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
@@ -12,11 +13,20 @@ export class LoginPage {
   email: string = '';
   password: string = '';
 
-  constructor(private AutheticaService: AutheticaService, private router: Router, private alertController: AlertController) {}
+  constructor(private loadingController: LoadingController,
+    private AutheticaService: AutheticaService, 
+    private router: Router, 
+    private alertController: AlertController) {}
 
  async login() {
+
+  const loading = await this.loadingController.create({
+    message: 'Iniciando sesión...',
+  });
+  await loading.present();
     this.AutheticaService.login(this.email, this.password).subscribe(async result => {
       if (result.success) {
+        await loading.dismiss();
         console.log('Login successful:', result.data);
         console.log('User ID:', this.AutheticaService.getCurrentUserId());
 
@@ -42,6 +52,7 @@ export class LoginPage {
       }
       
     });
+    
   }
 
   getAllUsers() {
@@ -50,5 +61,5 @@ export class LoginPage {
     });
   }
 
-
+  
 }

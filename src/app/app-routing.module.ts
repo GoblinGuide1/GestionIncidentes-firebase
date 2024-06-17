@@ -38,6 +38,14 @@ const routes: Routes = [
     path: 'diagnos-incidencia',
     loadChildren: () => import('./diagnos-incidencia/diagnos-incidencia.module').then( m => m.DiagnosIncidenciaPageModule)
   },
+  {
+    path: 'create-user',
+    loadChildren: () => import('./create-user/create-user.module').then( m => m.CreateUserPageModule)
+  },
+  {
+    path: 'asig-incidencia',
+    loadChildren: () => import('./asig-incidencia/asig-incidencia.module').then( m => m.AsigIncidenciaPageModule)
+  },
 ];
 
 @NgModule({

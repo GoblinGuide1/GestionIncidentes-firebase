@@ -3,6 +3,8 @@ import { Diagnosticos } from '../models/interfaces';
 import { AutheticaService } from '../authetica.service';
 import { Router } from '@angular/router';
 import { FirestorageService } from '../services/firestorage.service';
+import { Location } from '@angular/common'; // Importar Location
+
 @Component({
   selector: 'app-diagnos-incidencia',
   templateUrl: './diagnos-incidencia.page.html',
@@ -12,7 +14,11 @@ export class DiagnosIncidenciaPage implements OnInit {
 
   incidencias: Diagnosticos[] = [];
   isFormValid: boolean = false;
-  constructor(public AutheticaService: AutheticaService, private router: Router, public firestorageService: FirestorageService) { }
+  constructor(public AutheticaService: AutheticaService,
+     private router: Router,
+      public firestorageService: FirestorageService,
+      private location: Location
+    ) { }
   newDiagnos: Diagnosticos = {
     idUsuario: '',
     fecha: this.getFormattedDate(),
@@ -64,6 +70,9 @@ export class DiagnosIncidenciaPage implements OnInit {
   getFormattedTime(): string {
     const date = new Date();
     return date.toTimeString().slice(0, 5);
+  }
+  goBack() {
+    this.location.back();
   }
 
 }

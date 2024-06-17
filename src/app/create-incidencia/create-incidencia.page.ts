@@ -3,6 +3,8 @@ import { AutheticaService } from '../authetica.service';
 import { Router } from '@angular/router';
 import { FirestorageService } from '../services/firestorage.service';
 import { Incidencias } from '../models/interfaces';
+import { Location } from '@angular/common'; // Importar Location
+
 @Component({
   selector: 'app-create-incidencia',
   templateUrl: './create-incidencia.page.html',
@@ -22,9 +24,22 @@ export class CreateIncidenciaPage implements OnInit {
     descripcion: '',
     lugar: '',
     imagen: '',
-    idIncidencia: ''
+    idIncidencia: '',
+    idEstado: NaN,
+    justificacionCirre: '',
+    idPrioridad: NaN,
+    idRiesgo: NaN,
+    idAfectacion: NaN,
+    idCategoria: NaN,
+    obsevaciones: '',
+    idBitacora: NaN,
   }
-  constructor(public AutheticaService: AutheticaService, private router: Router, public firestorageService: FirestorageService) { }
+  constructor(public AutheticaService: AutheticaService,
+     private router: Router,
+      public firestorageService: FirestorageService,
+      private location: Location
+    
+    ) { }
 
   ngOnInit() {
     this.newIncidencias.idUsuario = this.AutheticaService.getCurrentUserId();
@@ -91,5 +106,8 @@ export class CreateIncidenciaPage implements OnInit {
                        this.newIncidencias.descripcion.trim() !== '' &&
                        this.newIncidencias.lugar.trim() !== '' &&
                        this.newIncidencias.imagen !== '';
+  }
+  goBack() {
+    this.location.back();
   }
 }
