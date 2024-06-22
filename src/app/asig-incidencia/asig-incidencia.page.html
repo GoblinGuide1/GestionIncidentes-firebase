@@ -11,20 +11,88 @@
       <ion-title size="large">Asignar una incidencia</ion-title>
     </ion-toolbar>
   </ion-header>
+
   <ion-card-content>
-      <ion-textarea  class="ion-input-margin" label="Nombre" labelPlacement="floating" fill="outline" ></ion-textarea>
-      <ion-textarea class="ion-input-margin"  label="Cedula" labelPlacement="floating" fill="outline"></ion-textarea>
-      <ion-textarea class="ion-input-margin" label="Puesto" labelPlacement="floating" fill="outline" ></ion-textarea>
-      <ion-textarea class="ion-input-margin" label="Celular" labelPlacement="floating" fill="outline" ></ion-textarea>
-      <ion-textarea class="ion-input-margin" label="Departamento" labelPlacement="floating" fill="outline" ></ion-textarea>
-      <ion-textarea class="ion-input-margin" label="Usuario Institucional o Correo" labelPlacement="floating" fill="outline"></ion-textarea>
-      <ion-textarea class="ion-input-margin" label="Rol" labelPlacement="floating" fill="outline"></ion-textarea>
-
+    <ion-select
+    aria-label="Nivel de afectacion"
+    placeholder="Nivel de afectacion"
+    (ionChange)="handleChangeAfectacion($event)"
+    (ionCancel)="handleCancel()"
+    (ionDismiss)="handleDismiss()"
+  >
+    <ion-select-option value=1>Bajo</ion-select-option>
+    <ion-select-option value=2>Medio</ion-select-option>
+    <ion-select-option value=3>Alto</ion-select-option>
+  </ion-select>
     
-    <ion-button  class="ion-button-margin" expand="full"  shape="round" (click)="editarIncidencia(AutheticaService.pressid)" >Guardar Usuario</ion-button>
+</ion-card-content>
 
+  <ion-card-content>
+    <ion-select
+    aria-label="Nivel de Riesgo"
+    placeholder="Nivel de Riesgo"
+    (ionChange)="handleChangeRiesgo($event)"
+    (ionCancel)="handleCancel()"
+    (ionDismiss)="handleDismiss()"
+  >
+  <ion-select-option value=1>Muy bajo</ion-select-option>
+    <ion-select-option value=2>Bajo</ion-select-option>
+    <ion-select-option value=3>Medio</ion-select-option>
+    <ion-select-option value=4>Alto</ion-select-option>
+    <ion-select-option value=6>Muy alto</ion-select-option>
+
+  </ion-select>
+</ion-card-content>
+
+<ion-card-content>
+  <ion-select
+  aria-label="Nivel de Prioridad"
+  placeholder="Nivel de Prioridad"
+  (ionChange)="handleChangePrioridad($event)"
+  (ionCancel)="handleCancel()"
+  (ionDismiss)="handleDismiss()"
+>
+<ion-select-option value=1>Muy bajo</ion-select-option>
+  <ion-select-option value=2>Bajo</ion-select-option>
+  <ion-select-option value=3>Medio</ion-select-option>
+  <ion-select-option value=4>Alto</ion-select-option>
+  <ion-select-option value=6>Muy alto</ion-select-option>
+
+</ion-select>
+</ion-card-content>
+
+<ion-card-content>
+  <ion-select
+  aria-label="Nivel de categoria"
+  placeholder="Nivel de categoria"
+  (ionChange)="handleChangePrioridad($event)"
+  (ionCancel)="handleCancel()"
+  (ionDismiss)="handleDismiss()"
+>
+<ion-select-option value=1>Reparación</ion-select-option>
+  <ion-select-option value=2>Intervención por causas naturales,</ion-select-option>
+  <ion-select-option value=3>Atención al mobiliario</ion-select-option>
+
+</ion-select>
+
+<ion-card-content>
+  <ion-select
+    aria-label="Seleccione un Tecnico"
+    placeholder="Seleccione un Tecnico"
+    (ionChange)="handleChangeUsuario($event)"
+    (ionCancel)="handleCancel()"
+    (ionDismiss)="handleDismiss()"
+  >
+    <ion-select-option *ngFor="let user of (users$| async)" [value]="user.id">
+      {{ user.ct_nombreUsuario }} <!-- Ajusta según tu estructura de datos -->
+    </ion-select-option>
+  </ion-select>
+</ion-card-content>
 
 </ion-card-content>
+
+    <ion-button  class="ion-button-margin" expand="full"  shape="round" (click)="editarIncidencia(AutheticaService.pressid)" (click)="guardarAsign()" >Guardar Asignacion</ion-button>
+
 
 
 

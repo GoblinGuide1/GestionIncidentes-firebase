@@ -25,7 +25,7 @@ export class CreateIncidenciaPage implements OnInit {
     lugar: '',
     imagen: '',
     idIncidencia: '',
-    idEstado: NaN,
+    idEstado: 1,
     justificacionCirre: '',
     idPrioridad: NaN,
     idRiesgo: NaN,

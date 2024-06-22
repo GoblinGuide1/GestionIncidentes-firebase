@@ -14,6 +14,7 @@ export class DiagnosIncidenciaPage implements OnInit {
 
   incidencias: Diagnosticos[] = [];
   isFormValid: boolean = false;
+  idEstado = 3;
   constructor(public AutheticaService: AutheticaService,
      private router: Router,
       public firestorageService: FirestorageService,
@@ -54,14 +55,31 @@ export class DiagnosIncidenciaPage implements OnInit {
       if (this.isFormValid) {
       this.AutheticaService.createDoc(this.newDiagnos, 't_Diagnosticos', newdiagnosId).then(() => {
         console.log('diagnostico creado con ID:', newdiagnosId);
+        this.editarIncidencia(this.AutheticaService.pressid);
         this.router.navigate(['/home']);
       }).catch(error => {
         console.error('Error creando el diagnostico:', error);
       });
     }
   });
-
  }
+ editarIncidencia(incidenciaId: string) {
+  // Aquí deberías tener los nuevos datos a actualizar
+  const newData = {
+    idEstado: this.idEstado
+  
+  };
+  this.AutheticaService.updateIncidencia(incidenciaId, newData).subscribe(
+    () => {
+      console.log('Incidencia actualizada correctamente');
+      // Aquí puedes realizar cualquier acción adicional después de la actualización
+    },
+    error => {
+      console.error('Error al actualizar incidencia:', error);
+      // Manejo de errores
+    }
+  );
+}
   getFormattedDate(): string {
     const date = new Date();
     return date.toISOString().slice(0, 10);

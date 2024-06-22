@@ -46,6 +46,10 @@ const routes: Routes = [
     path: 'asig-incidencia',
     loadChildren: () => import('./asig-incidencia/asig-incidencia.module').then( m => m.AsigIncidenciaPageModule)
   },
+  {
+    path: 'user-diagnog',
+    loadChildren: () => import('./user-diagnog/user-diagnog.module').then( m => m.UserDiagnogPageModule)
+  },
 ];
 
 @NgModule({

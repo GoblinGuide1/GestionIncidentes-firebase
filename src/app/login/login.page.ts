@@ -20,12 +20,13 @@ export class LoginPage {
 
  async login() {
 
-  const loading = await this.loadingController.create({
-    message: 'Iniciando sesión...',
-  });
-  await loading.present();
+
     this.AutheticaService.login(this.email, this.password).subscribe(async result => {
       if (result.success) {
+        const loading = await this.loadingController.create({
+          message: 'Iniciando sesión...',
+        });
+        await loading.present();
         await loading.dismiss();
         console.log('Login successful:', result.data);
         console.log('User ID:', this.AutheticaService.getCurrentUserId());

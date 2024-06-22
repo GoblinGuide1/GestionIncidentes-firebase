@@ -30,12 +30,9 @@ export interface Diagnosticos {
     idDiagnostico: string;
 }
 
-export interface Asignacion{
-    cn_idAsigancion: number;
-    cn_idIncidencia: number;
-    cn_idRiesgo: number;
-    cn_idPrioridad: number;
+export interface Asignacion {
+    ct_idAsigancion: string;
+    ct_idIncidencia: string;
     cn_idUsuarioTce: number;
-    cn_idCategoria: number
-
 }
+

@@ -1,6 +1,6 @@
 import { NavController } from '@ionic/angular';
 import { AutheticaService } from './../authetica.service';
-import { Incidencias } from './../models/interfaces';
+import { Asignacion, Incidencias } from './../models/interfaces';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -11,12 +11,17 @@ import { Router } from '@angular/router';
 })
 export class HomePage implements OnInit {
 
-  userId: string | null = null;
+  userId= '';
   userRoles: string[] = [];
   pressIdInci = '';
   nameUser: string | null = null;
   incidencias: Incidencias[] = [];
   typeRol = "";
+  incidenciasAsig: Incidencias[] = [];
+  incidenciasT: Incidencias[] = [];
+  incidenciasUser: Incidencias[] = [];
+
+
   
 
   constructor(private autheticaService: AutheticaService,
@@ -24,8 +29,10 @@ export class HomePage implements OnInit {
       private navController: NavController) {}
 
   ngOnInit() {
+    this.getIncidenciasUsuario();
+    this.getIncidenciasAsig();
+    this.getIncidenciasTerminadas();
     this.getIncidencias();
-
     // Recuperar datos de localStorage
     this.userId = this.autheticaService.getCurrentUserId();
     
@@ -62,6 +69,30 @@ export class HomePage implements OnInit {
     );
   }
 
+  getIncidenciasAsig() {
+    const enlaceIncidencias = 't_Incidencias';
+    const enlaceAsignacion = 't_Asignacion';
+    const userId = this.userId; // Asumiendo que tienes un método para obtener el ID del usuario logueado
+  
+    // Obtener todas las asignaciones para el usuario logueado
+    this.autheticaService.getCollectionChanges<Asignacion>(enlaceAsignacion).subscribe(
+      asignaciones => {
+        const assignedIncidenciasIds = asignaciones
+          .filter(asignacion => asignacion.cn_idUsuarioTce == parseInt(this.userId) )
+          .map(asignacion => asignacion.ct_idIncidencia);
+  
+        // Obtener todas las incidencias
+        this.autheticaService.getCollectionChanges<Incidencias>(enlaceIncidencias).subscribe(
+          incidencias => {
+            // Filtrar las incidencias basadas en las asignaciones
+            this.incidenciasAsig = incidencias.filter(incidencia => assignedIncidenciasIds.includes(incidencia.idIncidencia));
+            console.log(this.incidenciasAsig);
+          }
+        );
+      }
+    );
+  }
+
   redirectUser() {
     if (!this.userId) {
       this.router.navigate(['/login']);
@@ -76,5 +107,58 @@ export class HomePage implements OnInit {
   hasRole(roles: string[]): boolean {
     return roles.some(role => this.userRoles.includes(role));
   }
+  getEstadoDescriptivo(idEstado: number): string {
+    switch (idEstado) {
+      case 1:
+        return 'Registrado';
+      case 2:
+        return 'Asignado';
+        case 3:
+          return 'En revision';
+          case 4:
+            return 'En reparacion';
+            case 5:
+              return 'Pendiente de compra';
+                case 6:
+                  return 'Terminado';
+                  case 7:
+                    return 'Aprobado';
+                    case 8:
+                      return 'Rechazado';
+                      case 9:
+                        return 'Cerrado';
+
+      default:
+        return 'Desconocido';
+    }
+  }
+
    
+
+  getIncidenciasTerminadas() {
+    const enlace = 't_Incidencias';
+    const estadoTerminado = 6; // Suponiendo que el estado de "Terminado" es 3
+  
+    this.autheticaService.getCollectionChanges<Incidencias>(enlace).subscribe(
+      res => {
+        // Filtrar las incidencias que tienen el estado de "Terminado"
+        this.incidenciasT = res.filter(incidencia => incidencia.idEstado === estadoTerminado);
+        console.log(this.incidenciasT);
+      }
+    );
+  }
+
+  getIncidenciasUsuario() {
+    const enlace = 't_Incidencias';
+  
+    this.autheticaService.getCollectionChanges<Incidencias>(enlace).subscribe(
+      res => {
+        console.log("el suario es "+this.userId)
+        // Filtrar las incidencias que tienen el estado de "Terminado"
+        this.incidenciasUser = res.filter(incidencia => incidencia.idUsuario === this.userId);
+          console.log(this.incidenciasUser);
+      }
+    );
+  }
+  
 }

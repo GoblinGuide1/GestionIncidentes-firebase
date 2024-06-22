@@ -1,0 +1,53 @@
+<!-- src/app/pages/home/home.page.html -->
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Diagnosticos creados</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+
+<ion-content id="main-content">
+
+    <ion-card  *ngFor="let incidencia of incidencias" >
+
+      <ion-item>
+        <ion-label>
+          Título: {{incidencia.titulo}}
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          Estado: {{getEstadoDescriptivo(incidencia.idEstado)}}
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          Descripcion: {{incidencia.descripcion}}
+        </ion-label>
+      </ion-item>
+      <ion-card-content>
+  <ion-select
+  aria-label="Cambio de Estados"
+  placeholder="Cambio de Estados"
+  (ionChange)="handleChangeEstados($event,incidencia.idIncidencia)"
+
+>
+<ion-select-option value=4>En reparacion</ion-select-option>
+  <ion-select-option value=6>Terminado</ion-select-option>
+
+
+</ion-select>
+
+</ion-card-content>
+
+    </ion-card>
+
+    <ion-fab slot="fixed" vertical="bottom" horizontal="center">
+      <ion-fab-button (click)="goBack()">
+          <ion-icon name="chevron-back"></ion-icon>
+        </ion-fab-button>
+      </ion-fab>

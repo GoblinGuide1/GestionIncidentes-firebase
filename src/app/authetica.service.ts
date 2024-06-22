@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { from, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Incidencias } from '../app/models/interfaces';
+
 interface Counter {
   lastIncidenceId: number;
   lastdiagnosceId: number;
@@ -107,7 +108,7 @@ generateIncidenceId(): Observable<string> {
     const counterData = counterDoc.data() as Counter;
     const lastIncidenceId = counterData.lastIncidenceId || 0;
     const newIncidenceId = lastIncidenceId + 1;
-    const newIncidenceCode = `Cod-${newIncidenceId.toString().padStart(6, '0')}`;
+    const newIncidenceCode = `2024-${newIncidenceId.toString().padStart(6, '0')}`;
 
     // Actualizar el contador
     transaction.update(counterDocRef.ref, { lastIncidenceId: newIncidenceId });
@@ -127,6 +128,23 @@ generateIncidenceId(): Observable<string> {
       const lastdiagnosceId = counterData.lastdiagnosceId || 0;
       const newgdiagnosceId = lastdiagnosceId + 1;
       const newDiagnosCode = `diag-${newgdiagnosceId.toString().padStart(6, '0')}`;
+      //actualizar contador
+      transaction.update(counterDocRef.ref, { lastdiagnosceId: newgdiagnosceId });
+      return newDiagnosCode;
+    }));
+  }
+
+  generateAsig(): Observable<string> {
+    const counterDocRef = this.firestore.doc('counters/lastAsigid');
+    return from(this.firestore.firestore.runTransaction(async transaction => {
+      const counterDoc = await transaction.get(counterDocRef.ref);
+      if (!counterDoc.exists) {
+        throw new Error('Counter document does not exist!');
+      }
+      const counterData = counterDoc.data() as Counter;
+      const lastdiagnosceId = counterData.lastdiagnosceId || 0;
+      const newgdiagnosceId = lastdiagnosceId + 1;
+      const newDiagnosCode = `asig-${newgdiagnosceId.toString().padStart(6, '0')}`;
       //actualizar contador
       transaction.update(counterDocRef.ref, { lastdiagnosceId: newgdiagnosceId });
       return newDiagnosCode;
@@ -174,10 +192,43 @@ generateIncidenceId(): Observable<string> {
     
   }
 
+
+
   updateIncidencia(incidenciaId: string, newData: Partial<Incidencias>): Observable<void> {
     const collection = this.firestore.collection('t_Incidencias');
     return from(collection.doc(incidenciaId).update(newData));
   }
 
 
+  getUsersWithRole(roleId: number): Observable<any[]> {
+    return this.firestore.collection('Usuarios', ref => ref.where('cn_idRol', '==', 4)).snapshotChanges().pipe(
+      map(actions => actions.map(a => {
+        const data = a.payload.doc.data() as { [key: string]: any }; // Aseguramos que data es un objeto
+        const id = a.payload.doc.id;
+        console.log({  ...data })
+        return { id, ...data };
+      }))
+    );
+  }
+  getTecnicoAsignacionesCount(): Observable<any[]> {
+    return this.firestore.collection('t_Asignacion').snapshotChanges().pipe(
+      map(actions => {
+        const contador: { [key: string]: number } = {};
+        actions.forEach(a => {
+          const data = a.payload.doc.data() as { cn_idUsuarioTce: string };
+          const idTecnico = data.cn_idUsuarioTce;
+          if (!contador[idTecnico]) {
+            contador[idTecnico] = 0;
+          }
+          contador[idTecnico]++;
+        });
+        const carga = Object.keys(contador).map(idTecnico => ({
+          idTecnico,
+          count: contador[idTecnico]
+        }));
+        console.log("la carga es para"+carga)
+        return carga;
+      })
+    );
+  }
 }
