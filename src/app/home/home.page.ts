@@ -26,7 +26,8 @@ export class HomePage implements OnInit {
 
   constructor(private autheticaService: AutheticaService,
      private router: Router,
-      private navController: NavController) {}
+      private navController: NavController,
+    ) {}
 
   ngOnInit() {
     this.getIncidenciasUsuario();
@@ -59,7 +60,7 @@ export class HomePage implements OnInit {
     irpagina(){
       this.navController.navigateBack("login")
     }
-  getIncidencias() {
+  getIncidencias() { //optiene todas las incidencias
     const enlace = 't_Incidencias';
     this.autheticaService.getCollectionChanges<Incidencias>(enlace).subscribe(
       res => {
@@ -69,7 +70,7 @@ export class HomePage implements OnInit {
     );
   }
 
-  getIncidenciasAsig() {
+  getIncidenciasAsig() { //optiene todas las incidencias asignadas a un tecnico
     const enlaceIncidencias = 't_Incidencias';
     const enlaceAsignacion = 't_Asignacion';
     const userId = this.userId; // Asumiendo que tienes un método para obtener el ID del usuario logueado
@@ -93,13 +94,13 @@ export class HomePage implements OnInit {
     );
   }
 
-  redirectUser() {
+  redirectUser() { // metodo para redirigir al login 
     if (!this.userId) {
       this.router.navigate(['/login']);
     }
   }
 
-  public getIncidenciaId(incidencia: Incidencias) {
+  public getIncidenciaId(incidencia: Incidencias) { //optiene el id de la incidencia seleccionada
     this.autheticaService.pressid = incidencia.idIncidencia;
     console.log("El ID del item es", this.autheticaService.pressid);
   }
@@ -107,6 +108,7 @@ export class HomePage implements OnInit {
   hasRole(roles: string[]): boolean {
     return roles.some(role => this.userRoles.includes(role));
   }
+
   getEstadoDescriptivo(idEstado: number): string {
     switch (idEstado) {
       case 1:
@@ -148,7 +150,7 @@ export class HomePage implements OnInit {
     );
   }
 
-  getIncidenciasUsuario() {
+  getIncidenciasUsuario() { //optiene las incidencias registradas por un usuario
     const enlace = 't_Incidencias';
   
     this.autheticaService.getCollectionChanges<Incidencias>(enlace).subscribe(
@@ -160,5 +162,13 @@ export class HomePage implements OnInit {
       }
     );
   }
-  
+
+  verDetalles(incidencia: Incidencias) {
+    this.navController.navigateForward('/incidencia-detalle', {
+      queryParams: { incidencia: JSON.stringify(incidencia) }
+    });
+  }
+  isIncidenciaCerrada(incidencia: Incidencias): boolean {
+    return incidencia.idEstado === 9 ; // 9 es cerrado
+  }
 }

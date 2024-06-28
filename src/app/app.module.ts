@@ -13,7 +13,6 @@ import { AngularFireAuthModule } from "@angular/fire/compat/auth";
 import { environment } from 'src/environments/environment';
 import { AngularFireStorageModule } from "@angular/fire/compat/storage";
 import { HttpClientModule } from '@angular/common/http';
-
 @NgModule({
   declarations: [AppComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,

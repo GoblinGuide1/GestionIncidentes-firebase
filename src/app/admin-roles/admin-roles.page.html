@@ -1,0 +1,44 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Administrador de roles</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar placeholder="Buscar Roles"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+<ion-header collapse="condense">
+  <ion-toolbar>
+    <ion-title size="large">Administrador de roles</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-card *ngFor="let roles of Roles">
+  <ion-card-header>
+    <ion-card-title>Rol {{roles.ct_tipoRol}}</ion-card-title>
+    <ion-card-subtitle>id Rol {{roles.cn_idRol}} </ion-card-subtitle>
+  </ion-card-header>
+  <ion-button fill="clear" (click)="presentAlertConfirm()" (click)="getRolId(roles)">Eliminar</ion-button>
+  <ion-button fill="clear" routerLink="/edit-roles" (click)="getRolId(roles)">Editar</ion-button>
+</ion-card>
+
+
+
+
+
+
+<ion-fab slot="fixed" vertical="bottom" horizontal="end">
+  <ion-fab-button>
+    <ion-icon name="chevron-back"></ion-icon>
+  </ion-fab-button>
+  <ion-fab-list side="top">
+    <ion-fab-button>
+      <ion-icon name="document"  routerLink="/create-roles"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-button>
+      <ion-icon name="globe" routerLink="/home" ></ion-icon>
+    </ion-fab-button>
+  </ion-fab-list>
+</ion-fab>
+</ion-content>

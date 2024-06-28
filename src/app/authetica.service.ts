@@ -4,7 +4,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
 import { from, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Incidencias } from '../app/models/interfaces';
+import { Incidencias, Roles } from '../app/models/interfaces';
 
 interface Counter {
   lastIncidenceId: number;
@@ -19,7 +19,9 @@ export class AutheticaService {
   public currentUserId: string = ''; // Propiedad para almacenar el ID del usuario
   private currentUserRole: string = '';
   public pressid: string = ''; // Propiedad para almacenar el ID del usuario
+  public pressidRol: number = 0; // Propiedad para almacenar el ID del rol
 
+  public count: number = 0;
   constructor(private firestore: AngularFirestore, private router: Router, public database: AngularFirestore) { }
 
   login(email: string, password: string): Observable<any> {
@@ -151,6 +153,23 @@ generateIncidenceId(): Observable<string> {
     }));
   }
 
+  generateRolesId(): Observable<string> {
+    const counterDocRef = this.firestore.doc('counters/lastRolesceId');
+    return from(this.firestore.firestore.runTransaction(async transaction => {
+      const counterDoc = await transaction.get(counterDocRef.ref);
+      if (!counterDoc.exists) {
+        throw new Error('Counter document does not exist!');
+      }
+      const counterData = counterDoc.data() as Counter;
+      const lastdiagnosceId = counterData.lastdiagnosceId || 0;
+      this.count = lastdiagnosceId;
+      const newgdiagnosceId = lastdiagnosceId + 1;
+      const newDiagnosCode = `${newgdiagnosceId.toString()}`;
+      //actualizar contador
+      transaction.update(counterDocRef.ref, { lastdiagnosceId: newgdiagnosceId });
+      return newDiagnosCode;
+    }));
+  }
   getCollectionChanges<tipo>(enlace: string) {
     const ref = this.firestore.collection<tipo>(enlace);
     return ref.valueChanges(); // Evalua todos los cambios y devuelve un observable
@@ -199,6 +218,13 @@ generateIncidenceId(): Observable<string> {
     return from(collection.doc(incidenciaId).update(newData));
   }
 
+  updateRoles(idRoles: number, newData: Partial<Roles>): Observable<void> {
+    const idRolesStr = idRoles.toString(); // Convertir el ID a cadena para Firestore
+    const collection = this.firestore.collection('t_roles');
+    return from(collection.doc(idRolesStr).update({ ...newData, idRoles }));
+  }
+
+
 
   getUsersWithRole(roleId: number): Observable<any[]> {
     return this.firestore.collection('Usuarios', ref => ref.where('cn_idRol', '==', 4)).snapshotChanges().pipe(
@@ -230,5 +256,16 @@ generateIncidenceId(): Observable<string> {
         return carga;
       })
     );
+  }
+
+  deleteRole(idRoles: number): Observable<void> {
+    const idRolesStr = idRoles.toString(); // Convertir el ID a cadena
+    const collection = this.firestore.collection('t_roles');
+    return from(collection.doc(idRolesStr).delete());
+  }
+
+  updateIncidenciaEstado(idIncidencia: string, estado: number): Observable<void> {
+    const collection = this.firestore.collection('t_Incidencias');
+    return from(collection.doc(idIncidencia).update({ idEstado: estado }));
   }
 }

@@ -36,3 +36,7 @@ export interface Asignacion {
     cn_idUsuarioTce: number;
 }
 
+export interface Roles{
+    cn_idRol : number;
+    ct_tipoRol: string;
+}

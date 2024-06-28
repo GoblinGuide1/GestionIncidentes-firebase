@@ -1,0 +1,30 @@
+
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title class="titleCU" >Editar Roles</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Editar Roles</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-card-content *ngFor="let roles of Roles">
+      <ion-textarea  class="ion-input-margin" label="{{roles.ct_tipoRol}}" labelPlacement="floating" fill="outline" [(ngModel)]="ct_tipoRol"></ion-textarea>
+      <ion-textarea class="ion-input-margin"  label="{{roles.cn_idRol}}" labelPlacement="floating" fill="outline" disabled="true"></ion-textarea>
+
+   
+    <ion-button  class="ion-button-margin" expand="full"  shape="round" (click)="editarRoles(roles.cn_idRol)">Editar  rol</ion-button>
+  </ion-card-content>
+
+
+<ion-fab slot="fixed" vertical="bottom" horizontal="center">
+  <ion-fab-button (click)="goBack()">
+      <ion-icon name="chevron-back"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>
+

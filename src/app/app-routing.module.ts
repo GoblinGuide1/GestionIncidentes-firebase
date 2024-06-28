@@ -50,6 +50,38 @@ const routes: Routes = [
     path: 'user-diagnog',
     loadChildren: () => import('./user-diagnog/user-diagnog.module').then( m => m.UserDiagnogPageModule)
   },
+  {
+    path: 'info-incidencia',
+    loadChildren: () => import('./info-incidencia/info-incidencia.module').then( m => m.InfoIncidenciaPageModule)
+  },
+  {
+    path: 'reportes',
+    loadChildren: () => import('./reportes/reportes.module').then( m => m.ReportesPageModule)
+  },
+  {
+    path: 'admin-users',
+    loadChildren: () => import('./admin-users/admin-users.module').then( m => m.AdminUsersPageModule)
+  },
+  {
+    path: 'edit-user',
+    loadChildren: () => import('./edit-user/edit-user.module').then( m => m.EditUserPageModule)
+  },
+  {
+    path: 'delete-user',
+    loadChildren: () => import('./delete-user/delete-user.module').then( m => m.DeleteUserPageModule)
+  },
+  {
+    path: 'admin-roles',
+    loadChildren: () => import('./admin-roles/admin-roles.module').then( m => m.AdminRolesPageModule)
+  },
+  {
+    path: 'create-roles',
+    loadChildren: () => import('./create-roles/create-roles.module').then( m => m.CreateRolesPageModule)
+  },
+  {
+    path: 'edit-roles',
+    loadChildren: () => import('./edit-roles/edit-roles.module').then( m => m.EditRolesPageModule)
+  },
 ];
 
 @NgModule({

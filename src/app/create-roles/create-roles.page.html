@@ -1,0 +1,28 @@
+
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title class="titleCU" >Creacion de Roles</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Creacion de Roles</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-card-content>
+      <ion-textarea  class="ion-input-margin" [(ngModel)]="newRoles.ct_tipoRol" label="Ingrese el nombre del rol" labelPlacement="floating" fill="outline" ></ion-textarea>
+
+
+    
+    <ion-button  class="ion-button-margin" expand="full"(click)=" checkFormValidity()" (click)="GurardarRoles()" shape="round">Guardar Roles</ion-button>
+<br>
+
+</ion-card-content>
+<ion-fab slot="fixed" vertical="bottom" horizontal="center">
+  <ion-fab-button (click)="goBack()">
+      <ion-icon name="chevron-back"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

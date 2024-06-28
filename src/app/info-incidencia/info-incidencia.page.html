@@ -11,58 +11,55 @@
     </ion-toolbar>
   </ion-header>
 
-<ion-content id="main-content">
-<ion-card-header>
-  <ion-card-title>Informacion de la incidencia</ion-card-title>
-</ion-card-header>
+  <ion-content id="main-content">
+    <ion-card *ngFor="let incidencia of incidencias">
+      <img [src]="incidencia.imagen">
+      <ion-card-header>
+        <ion-card-title>
+          Título: {{incidencia.titulo}}, ID Incidedencia: {{incidencia.idIncidencia}}
+          Lugar: {{incidencia.lugar}}
+        </ion-card-title>
+        <ion-card-subtitle>
+          Fecha: {{incidencia.fecha}}
+          Hora: {{incidencia.hora}}
+        </ion-card-subtitle>
+      </ion-card-header>
 
-<ion-card  *ngFor="let incidencia of incidencias">
+      <ion-card-content>
+        Estado: {{getEstadoDescriptivo(incidencia.idEstado)}} <br>
+        Prioridad: {{incidencia.idPrioridad}} <br>
+        Justificación de cierre: {{incidencia.justificacionCirre}} <br>
+        Prioridad: {{incidencia.idPrioridad}} <br>
+        Riesgo: {{incidencia.idRiesgo}} <br>
+        Afectación: {{incidencia.idAfectacion}} <br>
+        Categoría: {{incidencia.idCategoria}} <br>
+        Usuario asignado: {{incidencia.idUsuario}} <br>
+      </ion-card-content>
 
-  <img [src]="incidencia.imagen ">
-  <ion-card-header>
-    <ion-card-title>Título: {{incidencia.titulo}}, ID Incidedencia: {{incidencia.idIncidencia}}
-      Lugar: {{incidencia.lugar}}
+      <ion-button shape="round" (click)="presentCerrarIncidenciaAlert(incidencia)">Cerrar Incidencia</ion-button>
+      <ion-button color="danger" shape="round" [disabled]="isIncidenciaCerrada(incidencia)" (click)="presentRechazarIncidenciaAlert(incidencia)">Rechazado</ion-button>
+    </ion-card>
 
-    </ion-card-title>
-    <ion-card-subtitle>fecha: {{incidencia.fecha}}
-                      fecha: {{incidencia.hora}}
-    </ion-card-subtitle>
-  </ion-card-header>
-    <ion-card-content>
-     Estado: {{incidencia.idEstado}} <br>
-     Prioridad: {{incidencia.idPrioridad}} <br>
-     Justificacion de cierre: {{incidencia.justificacionCirre}} <br>
-     Prioridad: {{incidencia.idPrioridad}} <br>
-     Riesgo: {{incidencia.idRiesgo}} <br>
-     Afectacion: {{incidencia.idAfectacion}} <br>
-     Categoria: {{incidencia.idCategoria}} <br>
-     Usuario asignado: {{incidencia.idUsuario}} <br>
+    <ion-card color="medium" *ngFor="let diagnostico of diagnosticos">
+      <ion-card-header>
+        <ion-card-title>Id Diagnostico {{diagnostico.idDiagnostico}}</ion-card-title>
+        <ion-card-subtitle>
+          Fecha: {{diagnostico.fecha}}
+          Hora: {{diagnostico.hora}}
+          Incidencia Asignada: {{diagnostico.idIncidencia}}
+        </ion-card-subtitle>
+      </ion-card-header>
 
-    </ion-card-content>
+      <ion-card-content>
+        Se necesito compra: {{diagnostico.comprar}} <br>
+        Tiempo estimado de la solución: {{diagnostico.tiempoS}} <br>
+      </ion-card-content>
+    </ion-card>
 
-</ion-card>
-
-<ion-card color="medium" *ngFor="let diagnostico of diagnosticos">
-  <ion-card-header>
-    <ion-card-title>Id Diagnostico {{diagnostico.idDiagnostico}} </ion-card-title>
-    <ion-card-subtitle>fecha: {{diagnostico.fecha}}
-      fecha: {{diagnostico.hora}}
-    <br>
-  Incidencia Asignada {{diagnostico.idIncidencia}}</ion-card-subtitle>
-  </ion-card-header>
-
-  <ion-card-content> Se necesito compra:  {{diagnostico.comprar}} <br>
-  tiempo estimado de la solucion: {{diagnostico.tiempoS}} <br>
-   </ion-card-content>
-</ion-card>
-
-<ion-button shape="round">Cerrar Incidencia</ion-button> <ion-button color="danger" shape="round">Rechazado</ion-button>
-</ion-content>
-
-
-<ion-fab slot="fixed" vertical="bottom" horizontal="end">
-  <ion-fab-button (click)="goBack()">
-      <ion-icon name="chevron-back"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
+    <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+      <ion-fab-button (click)="goBack()">
+        <ion-icon name="chevron-back"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  </ion-content>
 </ion-content>
