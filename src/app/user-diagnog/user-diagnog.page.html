@@ -34,7 +34,7 @@
   aria-label="Cambio de Estados"
   placeholder="Cambio de Estados"
   (ionChange)="handleChangeEstados($event,incidencia.idIncidencia)"
-
+  (ionChange)="guardarBitacora($event,incidencia.idEstado)"
 >
 <ion-select-option value=4>En reparacion</ion-select-option>
   <ion-select-option value=6>Terminado</ion-select-option>

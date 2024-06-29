@@ -36,8 +36,8 @@
         Usuario asignado: {{incidencia.idUsuario}} <br>
       </ion-card-content>
 
-      <ion-button shape="round" (click)="presentCerrarIncidenciaAlert(incidencia)">Cerrar Incidencia</ion-button>
-      <ion-button color="danger" shape="round" [disabled]="isIncidenciaCerrada(incidencia)" (click)="presentRechazarIncidenciaAlert(incidencia)">Rechazado</ion-button>
+      <ion-button shape="round"  (click)="presentCerrarIncidenciaAlert(incidencia)" (click)="guardarBitacora(incidencia.idIncidencia,'cerrado',incidencia.idEstado)">Cerrar Incidencia</ion-button>
+      <ion-button color="danger" shape="round" [disabled]="isIncidenciaCerrada(incidencia)" (click)="presentRechazarIncidenciaAlert(incidencia)"  (click)="guardarBitacora(incidencia.idIncidencia,'Rechazado',incidencia.idEstado)">Rechazado</ion-button>
     </ion-card>
 
     <ion-card color="medium" *ngFor="let diagnostico of diagnosticos">

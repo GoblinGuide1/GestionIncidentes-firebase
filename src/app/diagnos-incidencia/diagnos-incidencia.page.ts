@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Diagnosticos } from '../models/interfaces';
+import { BitacoraCambioEstado, Diagnosticos } from '../models/interfaces';
 import { AutheticaService } from '../authetica.service';
 import { Router } from '@angular/router';
 import { FirestorageService } from '../services/firestorage.service';
@@ -31,6 +31,17 @@ export class DiagnosIncidenciaPage implements OnInit {
     idDiagnostico: '',
 
   }
+
+  newBitacora: BitacoraCambioEstado = {
+    cn_idBitacora: NaN,
+    ct_idIncidencia: "",
+    cf_fecha: this.getFormattedDate(),
+    ch_hora: this.getFormattedTime(),
+    ct_EstadoActual: "",
+    ct_EstadoNuevo: "",
+    ct_idUsuario: ""
+  
+  }
   checkFormValidity() {
     this.isFormValid = this.newDiagnos.detalles.trim() !== '' &&
                        this.newDiagnos.comprar.trim() !== ''&&
@@ -38,7 +49,7 @@ export class DiagnosIncidenciaPage implements OnInit {
   }
   ngOnInit() {
     this.newDiagnos.idUsuario = this.AutheticaService.getCurrentUserId();
-
+    this.newBitacora.ct_idUsuario= this.AutheticaService.getCurrentUserId();
   }
 
  async createDIagnos() {
@@ -92,5 +103,21 @@ export class DiagnosIncidenciaPage implements OnInit {
   goBack() {
     this.location.back();
   }
+
+  async guardarBitacora(){
+    const date = new Date();
+    this.AutheticaService.generateBitacoraId().subscribe(async newBitacora=>{
+      this.newBitacora.ct_EstadoActual = "Asignado"
+      this.newBitacora.ct_EstadoNuevo = "En revision"
+      this.newBitacora.ct_idIncidencia = this.AutheticaService.pressid
+      this.newBitacora.cn_idBitacora = parseInt(newBitacora);
+        this.AutheticaService.createDoc(this.newBitacora, 't_bitacorasEstados', newBitacora).then(() => {
+          console.log('asignacion creada con ID:', newBitacora);
+        }).catch(error => {
+          console.error('Error creando incidencia:', error);
+        });
+    })
+  }
+
 
 }

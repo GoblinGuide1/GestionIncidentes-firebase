@@ -18,7 +18,7 @@ export class AutheticaService {
 
   public currentUserId: string = ''; // Propiedad para almacenar el ID del usuario
   private currentUserRole: string = '';
-  public pressid: string = ''; // Propiedad para almacenar el ID del usuario
+  public pressid: string = ''; // Propiedad para almacenar el ID de de la incidencia
   public pressidRol: number = 0; // Propiedad para almacenar el ID del rol
 
   public count: number = 0;
@@ -170,6 +170,43 @@ generateIncidenceId(): Observable<string> {
       return newDiagnosCode;
     }));
   }
+
+  // metodo para generar el id de las bitacoras
+  generateBitacoraId(): Observable<string> {
+    const counterDocRef = this.firestore.doc('counters/lastBitacora');
+    return from(this.firestore.firestore.runTransaction(async transaction => {
+      const counterDoc = await transaction.get(counterDocRef.ref);
+      if (!counterDoc.exists) {
+        throw new Error('Counter document does not exist!');
+      }
+      const counterData = counterDoc.data() as Counter;
+      const lastdiagnosceId = counterData.lastdiagnosceId || 0;
+      this.count = lastdiagnosceId;
+      const newgdiagnosceId = lastdiagnosceId + 1;
+      const newDiagnosCode = `${newgdiagnosceId.toString()}`;
+      //actualizar contador
+      transaction.update(counterDocRef.ref, { lastdiagnosceId: newgdiagnosceId });
+      return newDiagnosCode;
+    }));
+  }
+
+  generateBitacoraIncidenciaId(): Observable<string> {
+    const counterDocRef = this.firestore.doc('counters/lastBitacoraIncidencia');
+    return from(this.firestore.firestore.runTransaction(async transaction => {
+      const counterDoc = await transaction.get(counterDocRef.ref);
+      if (!counterDoc.exists) {
+        throw new Error('Counter document does not exist!');
+      }
+      const counterData = counterDoc.data() as Counter;
+      const lastdiagnosceId = counterData.lastdiagnosceId || 0;
+      this.count = lastdiagnosceId;
+      const newgdiagnosceId = lastdiagnosceId + 1;
+      const newDiagnosCode = `${newgdiagnosceId.toString()}`;
+      //actualizar contador
+      transaction.update(counterDocRef.ref, { lastdiagnosceId: newgdiagnosceId });
+      return newDiagnosCode;
+    }));
+  }
   getCollectionChanges<tipo>(enlace: string) {
     const ref = this.firestore.collection<tipo>(enlace);
     return ref.valueChanges(); // Evalua todos los cambios y devuelve un observable
@@ -225,7 +262,6 @@ generateIncidenceId(): Observable<string> {
   }
 
 
-
   getUsersWithRole(roleId: number): Observable<any[]> {
     return this.firestore.collection('Usuarios', ref => ref.where('cn_idRol', '==', 4)).snapshotChanges().pipe(
       map(actions => actions.map(a => {
@@ -236,6 +272,7 @@ generateIncidenceId(): Observable<string> {
       }))
     );
   }
+
   getTecnicoAsignacionesCount(): Observable<any[]> {
     return this.firestore.collection('t_Asignacion').snapshotChanges().pipe(
       map(actions => {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common'; // Importar Location
-import { Diagnosticos, Incidencias } from '../models/interfaces';
+import { BitacoraCambioEstado, Diagnosticos, Incidencias } from '../models/interfaces';
 import { AutheticaService } from '../authetica.service';
 import { AlertController } from '@ionic/angular';
 
@@ -15,6 +15,15 @@ export class InfoIncidenciaPage implements OnInit {
 
   selectedIncidencia: Incidencias | null = null;
 
+  newBitacora: BitacoraCambioEstado = {
+    cn_idBitacora: NaN,
+    ct_idIncidencia: "",
+    cf_fecha: this.getFormattedDate(),
+    ch_hora: this.getFormattedTime(),
+    ct_EstadoActual: "",
+    ct_EstadoNuevo: "",
+    ct_idUsuario : this.autheticaService.currentUserId
+  }
   constructor( private autheticaService: AutheticaService,  
       private location: Location,
       private alertController: AlertController) { }
@@ -22,6 +31,8 @@ export class InfoIncidenciaPage implements OnInit {
   ngOnInit() {
     this.getIncidencias();
     this.getIncidenciasDiagnos();
+    this.newBitacora.ct_idUsuario= this.autheticaService.getCurrentUserId();
+
   }
 
 
@@ -79,22 +90,23 @@ export class InfoIncidenciaPage implements OnInit {
     switch (idEstado) {
       case 1:
         return 'Registrado';
-      case 2:
-        return 'Asignado';
-        case 3:
-          return 'En revision';
-          case 4:
-            return 'En reparacion';
-            case 5:
-              return 'Pendiente de compra';
-                case 6:
-                  return 'Terminado';
-                  case 7:
-                    return 'Aprobado';
-                    case 8:
-                      return 'Rechazado';
-                      case 9:
-                        return 'Cerrado';
+        case 2:
+          return 'Asignado';
+          case 3:
+            return 'En revision';
+            case 4:
+              return 'En reparacion';
+              case 5:
+                return 'Pendiente de compra';
+                  case 6:
+                    return 'Terminado';
+                    case 7:
+                      return 'Aprobado';
+                      case 8:
+                        return 'Rechazado';
+                        case 9:
+                          return 'Cerrado';
+  
 
       default:
         return 'Desconocido';
@@ -179,5 +191,31 @@ export class InfoIncidenciaPage implements OnInit {
 
   goBack() {
     this.location.back();
+  }
+
+  async guardarBitacora(idIncidencia: string,e : string, idEstado:number){
+    const date = new Date();
+
+    this.autheticaService.generateBitacoraId().subscribe(async newBitacora=>{
+      this.newBitacora.ct_EstadoActual =   this.getEstadoDescriptivo(idEstado);
+      this.newBitacora.ct_EstadoNuevo =  e;
+      this.newBitacora.cn_idBitacora = parseInt(newBitacora);
+        this.newBitacora.ct_idIncidencia = idIncidencia;
+        this.autheticaService.createDoc(this.newBitacora, 't_bitacorasEstados', newBitacora).then(() => {
+          console.log('asignacion creada con ID:', newBitacora);
+        }).catch(error => {
+          console.error('Error creando incidencia:', error);
+        });
+    })
+  }
+
+  getFormattedDate(): string {
+    const date = new Date();
+    return date.toISOString().slice(0, 10);
+  }
+
+  getFormattedTime(): string {
+    const date = new Date();
+    return date.toTimeString().slice(0, 5);
   }
 }

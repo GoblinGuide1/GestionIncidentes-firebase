@@ -51,7 +51,7 @@ export class HomePage implements OnInit {
     }
 
     this.redirectUser();
-    this.autheticaService.asigRoles(parseInt(this.userId))
+    //this.autheticaService.asigRoles(parseInt(this.userId))
     //this.asigRoles(this.userRole)
     console.log('Current User ID:', this.userId);
     console.log('Current User Role:', this.userRoles);
@@ -139,7 +139,7 @@ export class HomePage implements OnInit {
 
   getIncidenciasTerminadas() {
     const enlace = 't_Incidencias';
-    const estadoTerminado = 6; // Suponiendo que el estado de "Terminado" es 3
+    const estadoTerminado = 6; // Suponiendo que el estado de "Terminado" es 6
   
     this.autheticaService.getCollectionChanges<Incidencias>(enlace).subscribe(
       res => {

@@ -40,3 +40,25 @@ export interface Roles{
     cn_idRol : number;
     ct_tipoRol: string;
 }
+export interface BitacoraCambioEstado{
+    cn_idBitacora: number;
+    ct_idIncidencia: string;
+    cf_fecha: string ;
+    ch_hora:string ;
+    ct_EstadoActual:string;
+    ct_EstadoNuevo:string;
+    ct_idUsuario: string;
+
+}
+
+export interface BitacoraIncidencia{
+    cn_idBitacora: number;
+    ct_idIncidencia: string;
+    cf_fecha: string ;
+    ch_hora:string ;
+    idRiesgo: number;
+    idAfectacion: number;
+    idCategoria: number;
+    ct_idUsuario: string;
+
+}

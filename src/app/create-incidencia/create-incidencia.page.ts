@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AutheticaService } from '../authetica.service';
 import { Router } from '@angular/router';
 import { FirestorageService } from '../services/firestorage.service';
-import { Incidencias } from '../models/interfaces';
+import { BitacoraIncidencia, Incidencias } from '../models/interfaces';
 import { Location } from '@angular/common'; // Importar Location
 
 @Component({
@@ -34,6 +34,8 @@ export class CreateIncidenciaPage implements OnInit {
     obsevaciones: '',
     idBitacora: NaN,
   }
+
+
   constructor(public AutheticaService: AutheticaService,
      private router: Router,
       public firestorageService: FirestorageService,
@@ -43,6 +45,7 @@ export class CreateIncidenciaPage implements OnInit {
 
   ngOnInit() {
     this.newIncidencias.idUsuario = this.AutheticaService.getCurrentUserId();
+
   }
 
  async GuardarIncidencia() {
@@ -76,6 +79,32 @@ export class CreateIncidenciaPage implements OnInit {
   }
 
 
+  getEstadoDescriptivo(idEstado: number): string {
+    switch (idEstado) {
+      case 1:
+        return 'Registrado';
+        case 2:
+          return 'Asignado';
+          case 3:
+            return 'En revision';
+            case 4:
+              return 'En reparacion';
+              case 5:
+                return 'Pendiente de compra';
+                  case 6:
+                    return 'Terminado';
+                    case 7:
+                      return 'Aprobado';
+                      case 8:
+                        return 'Rechazado';
+                        case 9:
+                          return 'Cerrado';
+  
+
+      default:
+        return 'Desconocido';
+    }
+  }
   getFormattedDate(): string {
     const date = new Date();
     return date.toISOString().slice(0, 10);
@@ -110,4 +139,6 @@ export class CreateIncidenciaPage implements OnInit {
   goBack() {
     this.location.back();
   }
+
+
 }

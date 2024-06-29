@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common'; // Importar Location
-import { Asignacion, Incidencias } from '../models/interfaces';
+import { Asignacion, BitacoraCambioEstado, Incidencias } from '../models/interfaces';
 import { AutheticaService } from '../authetica.service';
 import { Router } from '@angular/router';
 import { FirestorageService } from '../services/firestorage.service';
@@ -32,6 +32,17 @@ export class AsigIncidenciaPage implements OnInit {
 
 }
 
+newBitacora: BitacoraCambioEstado = {
+  cn_idBitacora: NaN,
+  ct_idIncidencia: "",
+  cf_fecha: this.getFormattedDate(),
+  ch_hora: this.getFormattedTime(),
+  ct_EstadoActual: "",
+  ct_EstadoNuevo: "",
+  ct_idUsuario: this.AutheticaService.currentUserId
+
+}
+
   constructor( public AutheticaService: AutheticaService,
     private router: Router,
      public firestorageService: FirestorageService, private location: Location) { 
@@ -41,9 +52,13 @@ export class AsigIncidenciaPage implements OnInit {
   ngOnInit() {
     this.users$ = this.AutheticaService.getUsersWithRole(4);
     this.AutheticaService.getTecnicoAsignacionesCount();
+    this.newBitacora.ct_idUsuario= this.AutheticaService.getCurrentUserId();
+
   }
   goBack() {
+    console.log("estoy volviendo")
     this.location.back();
+    
   }
   
   handleChangeAfectacion(e :any) {
@@ -123,4 +138,31 @@ export class AsigIncidenciaPage implements OnInit {
           });
       })
     }
+
+    async guardarBitacora(){
+      const date = new Date();
+      this.AutheticaService.generateBitacoraId().subscribe(async newBitacora=>{
+        this.newBitacora.ct_EstadoActual = "Registrado"
+        this.newBitacora.ct_EstadoNuevo = "Asignado"
+        this.newBitacora.ct_idIncidencia = this.AutheticaService.pressid
+        this.newBitacora.cn_idBitacora = parseInt(newBitacora);
+          
+          this.AutheticaService.createDoc(this.newBitacora, 't_bitacorasEstados', newBitacora).then(() => {
+            console.log('asignacion creada con ID:', newBitacora);
+          }).catch(error => {
+            console.error('Error creando incidencia:', error);
+          });
+      })
+    }
+
+    
+  getFormattedDate(): string {
+    const date = new Date();
+    return date.toISOString().slice(0, 10);
+  }
+
+  getFormattedTime(): string {
+    const date = new Date();
+    return date.toTimeString().slice(0, 5);
+  }
 }

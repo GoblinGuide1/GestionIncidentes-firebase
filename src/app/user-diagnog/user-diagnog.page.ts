@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { AutheticaService } from './../authetica.service';
-import {  Diagnosticos, Incidencias } from './../models/interfaces';
+import {  BitacoraCambioEstado, Diagnosticos, Incidencias } from './../models/interfaces';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common'; // Importar Location
 
@@ -17,6 +17,17 @@ export class UserDiagnogPage implements OnInit {
 
   userId = this.autheticaService.getCurrentUserId;
  
+
+  newBitacora: BitacoraCambioEstado = {
+    cn_idBitacora: NaN,
+    ct_idIncidencia: "",
+    cf_fecha: this.getFormattedDate(),
+    ch_hora: this.getFormattedTime(),
+    ct_EstadoActual: "",
+    ct_EstadoNuevo: "",
+    ct_idUsuario : this.autheticaService.currentUserId
+  }
+  
   constructor(private autheticaService: AutheticaService,
     private router: Router,
      private navController: NavController,
@@ -25,6 +36,7 @@ export class UserDiagnogPage implements OnInit {
   ngOnInit() {
       this.getDiagnosticos();
     this.getIncidencias();
+    this.newBitacora.ct_idUsuario= this.autheticaService.getCurrentUserId();
 
   }
   irpagina(){
@@ -97,8 +109,9 @@ export class UserDiagnogPage implements OnInit {
   const newData = {
 
     idEstado: parseInt(selectedValue)
-
+    
   };
+  this.newBitacora.ct_idIncidencia = idIncidencia
   console.log(`idIncidencia: ${idIncidencia}, selectedValue: ${selectedValue}`);
 
   this.autheticaService.updateIncidencia(idIncidencia, newData).subscribe(
@@ -114,9 +127,38 @@ export class UserDiagnogPage implements OnInit {
 
   }
 
+  async guardarBitacora(e : any, idEstado:number){
+    const date = new Date();
+    const selectedValue = e.detail.value;
+
+    this.autheticaService.generateBitacoraId().subscribe(async newBitacora=>{
+      this.newBitacora.ct_EstadoActual =   this.getEstadoDescriptivo(idEstado)
+      this.newBitacora.ct_EstadoNuevo =  this.getEstadoDescriptivo(parseInt(selectedValue)) 
+      this.newBitacora.cn_idBitacora = parseInt(newBitacora);
+        
+        this.autheticaService.createDoc(this.newBitacora, 't_bitacorasEstados', newBitacora).then(() => {
+          console.log('asignacion creada con ID:', newBitacora);
+        }).catch(error => {
+          console.error('Error creando incidencia:', error);
+        });
+    })
+  }
 
   goBack() {
     this.location.back();
+  }
+
+
+
+  // optiene la fecha y la hora le dan un formato y lo devulvel con un string
+  getFormattedDate(): string {
+    const date = new Date();
+    return date.toISOString().slice(0, 10);
+  }
+
+  getFormattedTime(): string {
+    const date = new Date();
+    return date.toTimeString().slice(0, 5);
   }
 
 }
