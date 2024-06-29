@@ -15,6 +15,7 @@ export class InfoIncidenciaPage implements OnInit {
 
   selectedIncidencia: Incidencias | null = null;
 
+  // referencia a objeto
   newBitacora: BitacoraCambioEstado = {
     cn_idBitacora: NaN,
     ct_idIncidencia: "",
@@ -28,6 +29,10 @@ export class InfoIncidenciaPage implements OnInit {
       private location: Location,
       private alertController: AlertController) { }
 
+
+    
+      
+    // ejecuta los metodos y variables al ser seleecionados
   ngOnInit() {
     this.getIncidencias();
     this.getIncidenciasDiagnos();
@@ -36,6 +41,7 @@ export class InfoIncidenciaPage implements OnInit {
   }
 
 
+  // optiene todas las incidencias
   getIncidencias() {
     const enlace = 't_Incidencias';
     const idIncidencia = this.autheticaService.pressid; // Suponiendo que el estado de "Terminado" es 3
@@ -50,6 +56,8 @@ export class InfoIncidenciaPage implements OnInit {
       }
     );
   }
+
+  // obtiene las incidencias adiagnosticadas
   getIncidenciasDiagnos() {
     const enlace = 't_Diagnosticos';
   
@@ -65,6 +73,7 @@ export class InfoIncidenciaPage implements OnInit {
 
 
   
+  // selecciona la incidencia 
   selectIncidencia(incidencia: Incidencias): void {
     this.selectedIncidencia = incidencia;
   }
@@ -76,7 +85,7 @@ export class InfoIncidenciaPage implements OnInit {
 
 
 
-
+// actuzalia un estado
   updateEstado(idIncidencia: string, estado: number) {
     this.autheticaService.updateIncidenciaEstado(idIncidencia, estado).subscribe(() => {
       console.log(`Incidencia ${idIncidencia} actualizada a estado ${estado}`);
@@ -86,6 +95,7 @@ export class InfoIncidenciaPage implements OnInit {
     });
   }
 
+  // revulve el estado segun su id
   getEstadoDescriptivo(idEstado: number): string {
     switch (idEstado) {
       case 1:

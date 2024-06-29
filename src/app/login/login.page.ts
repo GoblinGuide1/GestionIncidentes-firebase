@@ -18,8 +18,8 @@ export class LoginPage {
     private router: Router, 
     private alertController: AlertController) {}
 
+    //metodo que valida el inicio de sesion ademas agrega el efecto de carga al iniciar sesion de forma correcta
  async login() {
-
 
     this.AutheticaService.login(this.email, this.password).subscribe(async result => {
       if (result.success) {

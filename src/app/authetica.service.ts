@@ -23,7 +23,7 @@ export class AutheticaService {
 
   public count: number = 0;
   constructor(private firestore: AngularFirestore, private router: Router, public database: AngularFirestore) { }
-
+ // Método para iniciar sesión
   login(email: string, password: string): Observable<any> {
     return from(this.firestore.collection('Usuarios', ref => ref.where('ct_correo', '==', email).where('cn_cedula', '==', password)).get())
       .pipe(
@@ -44,7 +44,7 @@ export class AutheticaService {
         })
       );
   }
-
+  // Obtener todos los usuarios
   getAllUsers() {
     return this.firestore.collection('Usuarios').snapshotChanges().pipe(
       map(actions => actions.map(a => {
@@ -55,6 +55,8 @@ export class AutheticaService {
     );
   }
 
+  // Obtener el ID del usuario actual
+
   getCurrentUserId(): string {
     return ""+localStorage.getItem('currentUserId');
   }
@@ -64,6 +66,8 @@ export class AutheticaService {
       map(user => user ? (user as any).cn_idRol : null)
     );
   }
+
+  // Obtener el rol del usuario por su ID
 
   getUserName(userId: string | null): Observable<string | null> {
     return of(localStorage.getItem('userName'));
@@ -98,6 +102,7 @@ deleteDoc(path: string, id:string){
 
 
 
+  // Generar un nuevo ID de incidencia
 
 generateIncidenceId(): Observable<string> {
   const counterDocRef = this.firestore.doc('counters/lastIncidenceId');
@@ -119,6 +124,7 @@ generateIncidenceId(): Observable<string> {
   }));
 }
 
+  // Generar un nuevo ID de diagnóstico
   generateDiagnosId(): Observable<string> {
     const counterDocRef = this.firestore.doc('counters/lastdiagnosceId');
     return from(this.firestore.firestore.runTransaction(async transaction => {
@@ -136,6 +142,7 @@ generateIncidenceId(): Observable<string> {
     }));
   }
 
+  // Generar un nuevo ID de asignación
   generateAsig(): Observable<string> {
     const counterDocRef = this.firestore.doc('counters/lastAsigid');
     return from(this.firestore.firestore.runTransaction(async transaction => {
@@ -153,6 +160,7 @@ generateIncidenceId(): Observable<string> {
     }));
   }
 
+  // Generar un nuevo ID de rol
   generateRolesId(): Observable<string> {
     const counterDocRef = this.firestore.doc('counters/lastRolesceId');
     return from(this.firestore.firestore.runTransaction(async transaction => {
@@ -190,6 +198,8 @@ generateIncidenceId(): Observable<string> {
     }));
   }
 
+
+  // Generar un nuevo ID de bitácora de incidencia
   generateBitacoraIncidenciaId(): Observable<string> {
     const counterDocRef = this.firestore.doc('counters/lastBitacoraIncidencia');
     return from(this.firestore.firestore.runTransaction(async transaction => {
@@ -207,11 +217,15 @@ generateIncidenceId(): Observable<string> {
       return newDiagnosCode;
     }));
   }
+
+  // Obtener los cambios en una colección
   getCollectionChanges<tipo>(enlace: string) {
     const ref = this.firestore.collection<tipo>(enlace);
     return ref.valueChanges(); // Evalua todos los cambios y devuelve un observable
   }
 
+
+  // Obtener datos de una colección
   getCollectionData<T>(enlace: string): Observable<T[]> {
     return this.firestore.collection<T>(enlace).snapshotChanges().pipe(
       map(actions => actions.map(a => {
@@ -222,6 +236,9 @@ generateIncidenceId(): Observable<string> {
     );
   }
 
+
+
+  // Asignar roles a un usuario
   asigRoles(userId: number): Observable<string[]> {
     return this.firestore.collection('t_usuariosRoles', ref => ref.where('cn_idUsuario', '==', userId)).snapshotChanges().pipe(
       map(actions => actions.map(a => {
@@ -235,7 +252,10 @@ generateIncidenceId(): Observable<string> {
       })
     );
   }
+  
 
+
+  // Mapear el ID del rol al nombre del rol
   private mapRoleIdToRoleName(roleId: number): string {
     switch (roleId) {
       case 1: return 'Administrador';
@@ -249,19 +269,20 @@ generateIncidenceId(): Observable<string> {
   }
 
 
-
+  // Actualizar una incidencia
   updateIncidencia(incidenciaId: string, newData: Partial<Incidencias>): Observable<void> {
     const collection = this.firestore.collection('t_Incidencias');
     return from(collection.doc(incidenciaId).update(newData));
   }
 
+  // Actualizar un rol
   updateRoles(idRoles: number, newData: Partial<Roles>): Observable<void> {
     const idRolesStr = idRoles.toString(); // Convertir el ID a cadena para Firestore
     const collection = this.firestore.collection('t_roles');
     return from(collection.doc(idRolesStr).update({ ...newData, idRoles }));
   }
 
-
+  // Obtener usuarios con un rol específico
   getUsersWithRole(roleId: number): Observable<any[]> {
     return this.firestore.collection('Usuarios', ref => ref.where('cn_idRol', '==', 4)).snapshotChanges().pipe(
       map(actions => actions.map(a => {
@@ -273,6 +294,7 @@ generateIncidenceId(): Observable<string> {
     );
   }
 
+  // Obtener el recuento de asignaciones de técnicos
   getTecnicoAsignacionesCount(): Observable<any[]> {
     return this.firestore.collection('t_Asignacion').snapshotChanges().pipe(
       map(actions => {
@@ -295,12 +317,16 @@ generateIncidenceId(): Observable<string> {
     );
   }
 
+
+  // Eliminar un rol
   deleteRole(idRoles: number): Observable<void> {
     const idRolesStr = idRoles.toString(); // Convertir el ID a cadena
     const collection = this.firestore.collection('t_roles');
     return from(collection.doc(idRolesStr).delete());
   }
 
+
+  // Actualizar el estado de una incidencia
   updateIncidenciaEstado(idIncidencia: string, estado: number): Observable<void> {
     const collection = this.firestore.collection('t_Incidencias');
     return from(collection.doc(idIncidencia).update({ idEstado: estado }));

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { AutheticaService } from './../authetica.service';
-import {  BitacoraCambioEstado, Diagnosticos, Incidencias } from './../models/interfaces';
+import { BitacoraCambioEstado, Diagnosticos, Incidencias, Asignacion } from './../models/interfaces';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common'; // Importar Location
 
@@ -11,18 +11,21 @@ import { Location } from '@angular/common'; // Importar Location
   styleUrls: ['./user-diagnog.page.scss'],
 })
 export class UserDiagnogPage implements OnInit {
-  diagnosticos: Diagnosticos[] = [];
-  incidencias: Incidencias[] = [];
-  Estados: string[] = [];
+  diagnosticos: Diagnosticos[] = []; // array que almacena los Diagnosticos 
+  incidencias: Incidencias[] = [];// array que almacena las incidencias
+  Estados: string[] = []; // array que almacena los Estados
 
+// asignacion del id usuario
   userId = this.autheticaService.getCurrentUserId;
  
 
+
+  //nuevo objero de referencia
   newBitacora: BitacoraCambioEstado = {
     cn_idBitacora: NaN,
     ct_idIncidencia: "",
-    cf_fecha: this.getFormattedDate(),
-    ch_hora: this.getFormattedTime(),
+    cf_fecha: this.getFormattedDate(), // asignacion de la fecha
+    ch_hora: this.getFormattedTime(), // asignacion de la hora
     ct_EstadoActual: "",
     ct_EstadoNuevo: "",
     ct_idUsuario : this.autheticaService.currentUserId
@@ -33,6 +36,8 @@ export class UserDiagnogPage implements OnInit {
      private navController: NavController,
      private location: Location) { }
 
+
+    // metodo que ejecuta variables o otros metodos al incializar el page
   ngOnInit() {
       this.getDiagnosticos();
     this.getIncidencias();
@@ -42,6 +47,8 @@ export class UserDiagnogPage implements OnInit {
   irpagina(){
     this.navController.navigateBack("login")
   }
+
+  // obtiene todos los diagnosticos
   getDiagnosticos() {
     const enlace = 't_Diagnosticos';
     const userId = this.autheticaService.getCurrentUserId(); // Asumiendo que tienes un método para obtener el ID del usuario logueado
@@ -55,6 +62,7 @@ export class UserDiagnogPage implements OnInit {
     );
   }
 
+  // obtiene todas las incidencias
   getIncidencias() {
     const enlaceIncidencias = 't_Incidencias';
     const enlaceDiagnosticos = 't_Diagnosticos';
@@ -77,6 +85,9 @@ export class UserDiagnogPage implements OnInit {
   }
   
 
+  
+
+  // identifica el nombre del estado segun el id estado que se le de
   getEstadoDescriptivo(idEstado: number): string {
     switch (idEstado) {
       case 1:
@@ -104,6 +115,7 @@ export class UserDiagnogPage implements OnInit {
   }
 
 
+  // metodo que recive un evento y id de incidencia
  handleChangeEstados(e :any, idIncidencia : string) {
   const selectedValue = e.detail.value;
   const newData = {
@@ -127,6 +139,7 @@ export class UserDiagnogPage implements OnInit {
 
   }
 
+// gyarda la bitacora
   async guardarBitacora(e : any, idEstado:number){
     const date = new Date();
     const selectedValue = e.detail.value;

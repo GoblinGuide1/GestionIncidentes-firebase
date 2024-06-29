@@ -12,14 +12,19 @@ import { Location } from '@angular/common'; // Importar Location
 })
 export class DiagnosIncidenciaPage implements OnInit {
 
+  // array que guarda los diagnosticos
   incidencias: Diagnosticos[] = [];
   isFormValid: boolean = false;
-  idEstado = 3;
+  idEstado = 3;// metodo que guarda un numero para fijar el estado
+  
+  //declaracion de bibliotecas a utilizar 
   constructor(public AutheticaService: AutheticaService,
      private router: Router,
       public firestorageService: FirestorageService,
       private location: Location
     ) { }
+
+    // referencia interface con asignacion de valores 
   newDiagnos: Diagnosticos = {
     idUsuario: '',
     fecha: this.getFormattedDate(),
@@ -32,6 +37,8 @@ export class DiagnosIncidenciaPage implements OnInit {
 
   }
 
+
+    // referencia interface con asignacion de valores 
   newBitacora: BitacoraCambioEstado = {
     cn_idBitacora: NaN,
     ct_idIncidencia: "",
@@ -42,18 +49,25 @@ export class DiagnosIncidenciaPage implements OnInit {
     ct_idUsuario: ""
   
   }
+
+  // valida que se han ingresado datos
   checkFormValidity() {
     this.isFormValid = this.newDiagnos.detalles.trim() !== '' &&
                        this.newDiagnos.comprar.trim() !== ''&&
                        this.newDiagnos.tiempoS > -1;
   }
+
+  // metodo que ejecuta los datos o otros metodos al iniciarlizar esta page
   ngOnInit() {
     this.newDiagnos.idUsuario = this.AutheticaService.getCurrentUserId();
     this.newBitacora.ct_idUsuario= this.AutheticaService.getCurrentUserId();
   }
 
+
+  // metodo encargado de crear los diagnosticos 
  async createDIagnos() {
 
+  // genera el id de aidgnostico mediante un metodo y lo guarda en una variable
     this.AutheticaService.generateDiagnosId().subscribe(async newdiagnosId => {
 
       const path ='Diagnosticos';

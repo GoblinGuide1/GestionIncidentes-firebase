@@ -1,3 +1,4 @@
+// objeto de Incidencias
 export interface Incidencias {
 
     titulo: string ;
@@ -19,6 +20,7 @@ export interface Incidencias {
     
 }
 
+// objero de Diagnosticos
 export interface Diagnosticos {
     fecha: string ;
     hora:string ;
@@ -30,16 +32,20 @@ export interface Diagnosticos {
     idDiagnostico: string;
 }
 
+// objeto de Asignacion
 export interface Asignacion {
     ct_idAsigancion: string;
     ct_idIncidencia: string;
     cn_idUsuarioTce: number;
 }
 
+//objeto de roles
 export interface Roles{
     cn_idRol : number;
     ct_tipoRol: string;
 }
+
+// objetos de BitacoraCambioEstado
 export interface BitacoraCambioEstado{
     cn_idBitacora: number;
     ct_idIncidencia: string;
@@ -51,6 +57,7 @@ export interface BitacoraCambioEstado{
 
 }
 
+// objetos de BitacoraCambioEstado
 export interface BitacoraIncidencia{
     cn_idBitacora: number;
     ct_idIncidencia: string;

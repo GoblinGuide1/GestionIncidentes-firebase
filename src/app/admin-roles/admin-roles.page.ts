@@ -20,6 +20,7 @@ export class AdminRolesPage implements OnInit {
   ngOnInit() {
   this.getRoles();
   }
+  // este metodo sirve para confirmar la eliminacion del rol 
   async presentAlertConfirm() {
     const alert = await this.alertController.create({
       header: 'Confirmar eliminación',
@@ -44,7 +45,7 @@ export class AdminRolesPage implements OnInit {
 
     await alert.present();
   }
-
+  // busca el rol por el id y  lo elimina
   deleteRole(id: number) {
     this.autheticaService.deleteRole(id).subscribe(() => {
       console.log('Rol eliminado de la base de datos');
@@ -54,6 +55,7 @@ export class AdminRolesPage implements OnInit {
     });
   }
 
+  // obtiene todod los roles
   getRoles() {
     const enlace = 't_roles';
     this.autheticaService.getCollectionChanges<Roles>(enlace).subscribe(
@@ -64,7 +66,7 @@ export class AdminRolesPage implements OnInit {
     );
   }
 
-
+// obtiene el rol seleccionado
   public getRolId(roles: Roles) {
     this.autheticaService.pressidRol = roles.cn_idRol;
     console.log("El ID del item es", this.autheticaService.pressidRol);

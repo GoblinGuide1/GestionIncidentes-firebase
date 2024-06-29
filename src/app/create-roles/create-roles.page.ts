@@ -25,7 +25,9 @@ export class CreateRolesPage implements OnInit {
 
   }
 
+  // guarda los reles utilizados
   async GurardarRoles() {
+    // genera el id de roles y lo guarda en una variable
     this.AutheticaService.generateRolesId().subscribe(async lastdiagnosceId => {
       if (this.isFormValid) {
         const path ='t_roles';
@@ -42,10 +44,14 @@ export class CreateRolesPage implements OnInit {
     });
   }
 
+
+  // valida que se se ingreso un valor en el campos
   checkFormValidity() {
     this.isFormValid = this.newRoles.ct_tipoRol.trim() !== '';
 
   }
+
+  // devuelve a la ultima interfaz visitada
   goBack() {
     this.location.back();
   }

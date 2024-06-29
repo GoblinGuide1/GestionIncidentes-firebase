@@ -11,6 +11,7 @@ export class AdminUsersPage implements OnInit {
 
   ngOnInit() {
   }
+  //confirma la eliminacion de usuarios
   async presentAlertConfirm() {
     const alert = await this.alertController.create({
       header: 'Confirmar eliminación',

@@ -24,6 +24,8 @@ export class AsigIncidenciaPage implements OnInit {
   users$: Observable<any[]>; // Observable para los usuarios
  idTecnico: number = 0;
 
+
+ // se aplica referencia del objetivo
  newAsignacion: Asignacion = {
 
   ct_idAsigancion : "",
@@ -32,6 +34,8 @@ export class AsigIncidenciaPage implements OnInit {
 
 }
 
+
+// referencia al objeto  o interface
 newBitacora: BitacoraCambioEstado = {
   cn_idBitacora: NaN,
   ct_idIncidencia: "",
@@ -42,60 +46,79 @@ newBitacora: BitacoraCambioEstado = {
   ct_idUsuario: this.AutheticaService.currentUserId
 
 }
-
+//contructor, se declara la estructura de las bibliotecas a utilizar
   constructor( public AutheticaService: AutheticaService,
     private router: Router,
      public firestorageService: FirestorageService, private location: Location) { 
       this.users$ = new Observable<any[]>(); 
      }
 
+
+     // metodos y variables que se inicializan al iniciarlizar este apartado
   ngOnInit() {
     this.users$ = this.AutheticaService.getUsersWithRole(4);
     this.AutheticaService.getTecnicoAsignacionesCount();
     this.newBitacora.ct_idUsuario= this.AutheticaService.getCurrentUserId();
 
   }
+  // metodo que al ser llamada en el html devolvera al usuario a la ultima interface que entro
   goBack() {
     console.log("estoy volviendo")
     this.location.back();
     
   }
   
+  // obtiene el valor del evento que recibe 
   handleChangeAfectacion(e :any) {
     this.idAfectacion = e.detail.value
     console.log('ionChange fired with value: ' + e.detail.value);
   }
+
+  // obtiene el valor del evento que recibe 
   handleChangeRiesgo(e :any) {
     this.idRiesgo = e.detail.value
     console.log('ionChange fired with value: ' + e.detail.value);
   }
+
+  // obtiene el valor del evento que recibe 
   handleChangePrioridad(e :any) {
     this.idRiesgo = e.detail.value
     console.log('ionChange fired with value: ' + e.detail.value);
   }
+
+  // obtiene el valor del evento que recibe 
   handleChangeCaregoria(e : any){
     this.idCategoria = e.detail.value
     console.log('ionChange fired with value: ' + e.detail.value);
 
   }
+
+  // obtiene el valor del evento que recibe 
   handleChangeEstado(e : any){
     this.idCategoria = e.detail.value
     console.log('ionChange fired with value: ' + e.detail.value);
 
   }
+
+  // obtiene el valor del evento que recibe 
   handleChangeUsuario(e : any){
     this.idTecnico = e.detail.value
     console.log('ionChange fired with value: ' + e.detail.value);
 
   }
+
+  // imprime un mensaje al recharzar la interaccion 
   handleCancel() {
     console.log('ionCancel fired');
   }
 
+  // obtiene el valor del evento que recibe 
   handleDismiss() {
     console.log('ionDismiss fired');
   }
 
+
+  // optiene la incidencia precionada
   public getIncidenciaId(incidencia: Incidencias) {
     this.AutheticaService.pressid = incidencia.idIncidencia;
 
@@ -124,10 +147,13 @@ newBitacora: BitacoraCambioEstado = {
       );
     }
 
+    // guarda la asignacion
     async guardarAsign(){
       this.AutheticaService.generateAsig().subscribe(async newAsigId=>{
+        // se llaman los componentes del newAsignacion y se declaran los valores que se le asignaran
           this.newAsignacion.cn_idUsuarioTce = this.idTecnico;
           this.newAsignacion.ct_idAsigancion = newAsigId;
+        //pressid variable que guarda el id de la incidencia presionado 
           this.newAsignacion.ct_idIncidencia = this.AutheticaService.pressid
           
           this.AutheticaService.createDoc(this.newAsignacion, 't_Asignacion', newAsigId).then(() => {
@@ -139,9 +165,12 @@ newBitacora: BitacoraCambioEstado = {
       })
     }
 
+    //crea la bitacora
     async guardarBitacora(){
       const date = new Date();
+      //llama el metodo para generar el id de la bitacora y los guarda en una variable
       this.AutheticaService.generateBitacoraId().subscribe(async newBitacora=>{
+        // asignacion de valores a los coponentes de newBitacoras
         this.newBitacora.ct_EstadoActual = "Registrado"
         this.newBitacora.ct_EstadoNuevo = "Asignado"
         this.newBitacora.ct_idIncidencia = this.AutheticaService.pressid
@@ -155,12 +184,12 @@ newBitacora: BitacoraCambioEstado = {
       })
     }
 
-    
+    // metodo que obtiene la fecha y le da un formato
   getFormattedDate(): string {
     const date = new Date();
     return date.toISOString().slice(0, 10);
   }
-
+    // metrodo que obtiene la hora y le da un formato
   getFormattedTime(): string {
     const date = new Date();
     return date.toTimeString().slice(0, 5);

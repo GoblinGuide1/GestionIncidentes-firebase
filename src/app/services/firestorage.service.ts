@@ -8,7 +8,7 @@ import { finalize } from 'rxjs';
 export class FirestorageService {
 
   constructor(public FireStorage:AngularFireStorage) { }
-
+// metodo para cargar la imagen 
   uploadImage(file: any, path: string, nombre: string): Promise<string> {
     return new Promise((resolve, reject) => {
       const filepath = `${path}/${nombre}`;
